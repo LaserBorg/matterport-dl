@@ -23,6 +23,26 @@ from PIL import Image
 from tqdm import tqdm
 
 
+def make_mtlpath_relative(dst_3d_dir, dam_filename):
+    obj_file_path = os.path.join(dst_3d_dir, f"{dam_filename}.obj")
+    
+    # Read the contents of the OBJ file
+    with open(obj_file_path, "r") as f:
+        lines = f.readlines()
+    
+    # Modify the mtllib line
+    for i, line in enumerate(lines):
+        if line.startswith("mtllib"):
+            # Extract the filename from the mtllib line
+            mtl_filename = os.path.basename(line.split()[1])
+            # Replace the line with the new mtllib line
+            lines[i] = f"mtllib {mtl_filename}\n"
+    
+    # Write the modified lines back to the OBJ file
+    with open(obj_file_path, "w") as f:
+        f.writelines(lines)
+
+
 dimensions = (4096, 2048)
 rotation = (0, 0, 180)
 downloads_dir = "downloads"
@@ -112,6 +132,10 @@ for matterport_id in tqdm(matterport_dirs, desc="Processing Matterport directori
         shutil.move(obj_file, dst_3d_dir)
     if os.path.exists(mtl_file):
         shutil.move(mtl_file, dst_3d_dir)
+
+
+    # make mtl path in obj file relative
+    make_mtlpath_relative(dst_3d_dir, dam_filename)
 
 
     # Move matching files from texture directory to 3D directory
