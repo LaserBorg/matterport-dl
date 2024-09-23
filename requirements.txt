@@ -2,3 +2,5 @@ requests
 tqdm
 curl_cffi
 aiofiles
+tqdm
+cube2sphere

@@ -2,3 +2,6 @@
 downloads/
 output/
 defaults.json
+
+# ignore other git repos
+matterport-decoder/
